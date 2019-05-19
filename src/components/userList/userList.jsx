@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './styles/UserList.sass';
 
 export default class UserList extends React.Component {
   constructor() {

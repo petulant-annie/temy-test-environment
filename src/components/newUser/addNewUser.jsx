@@ -104,7 +104,7 @@ export default class NewUser extends React.Component {
         <input type="number" className="phone" placeholder="Phone Number" required />
         <input type="text" className="adress" placeholder="Adress" />
         <textarea name="about" id="about" cols="30" rows="10" maxLength="500" placeholder="About Me"></textarea>
-        <input type="submit" />
+        <input type="submit" onSubmit={this.nameOnChange} />
       </form>
     );
   }
