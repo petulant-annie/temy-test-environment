@@ -5,6 +5,7 @@
   "main": "index.jsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node server.js",
     "start": "parcel ./src/index.html"
   },
   "author": "Anna Zakharenko",
@@ -14,9 +15,17 @@
     "@types/react": "^16.8.6",
     "@types/react-dom": "^16.8.0",
     "autoprefixer": "^7.2.1",
-    "sass": "^1.17.2",
+    "babel-core": "^6.26.3",
+    "babel-plugin-dynamic-import-node": "^2.2.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "json-server": "^0.14.2",
+    "node-sass": "^4.7.2",
     "parcel": "^1.12.3",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "sass": "^1.17.2"
   }
 }

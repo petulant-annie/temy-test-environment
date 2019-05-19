@@ -158,6 +158,8 @@ dist
 #DynamoDB Local files
 .dynamodb/
 
-
 # Idea
 .idea
+
+# Bable
+.bablerc
