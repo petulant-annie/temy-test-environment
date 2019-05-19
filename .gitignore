@@ -160,5 +160,7 @@ typings/
 
 
 # Idea
-
 .idea
+
+#Parcel
+.dist
