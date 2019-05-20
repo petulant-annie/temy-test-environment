@@ -100,6 +100,17 @@ export default class NewUser extends React.Component {
     return name;
   }
 
+  handleSubmit = (e) => {
+    const data = new FormData(e.target);
+
+    console.log(data);
+
+    fetch('http://localhost:3000/users', {
+      method: 'POST',
+      body: data,
+    });
+  }
+
   componentDidMount() {
     this.getInfo();
   }
@@ -114,7 +125,7 @@ export default class NewUser extends React.Component {
       this.state.cities.map(item => this.mapCitySelectOptions(item, this.state.stateValue));
 
     return (
-      <form className="newUser" id="newUser">
+      <form className="newUser" id="newUser" onSubmit={this.handleSubmit}>
         <input
           type="text"
           className="inputName"
@@ -185,7 +196,7 @@ export default class NewUser extends React.Component {
           maxLength={500}
           placeholder="About Me"
         />
-        <input type="submit" />
+        <button>Submit</button>
       </form>
     );
   }
