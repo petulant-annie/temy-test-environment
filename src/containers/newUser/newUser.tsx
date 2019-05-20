@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { IUser } from '../userList/userList';
 import './styles/addNewUser.sass';
 
 interface IItem {
@@ -8,6 +9,7 @@ interface IItem {
 
 export default class NewUser extends React.Component {
   state: {
+    user: IUser,
     cities: [],
     countries: [],
     states: [],
@@ -21,6 +23,18 @@ export default class NewUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: {
+        id: null,
+        name: '',
+        email: '',
+        phone_number: null,
+        address: '',
+        about_me: '',
+        country_id: null,
+        state_id: null,
+        city_id: null,
+        createdAt: null,
+      },
       cities: [],
       countries: [],
       states: [],
@@ -70,9 +84,17 @@ export default class NewUser extends React.Component {
     if (item.state_id === value) return <option key={item.id} value={item.id}>{item.name}</option>;
   }
 
-  nameOnChange(e) {
-    const event = e.target.value.match(/^([A-Z])\w+$/ig);
-    console.log(event);
+  nameOnChange() {
+    const name = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const simpleName = e.target.value.match(/^([A-Z])\w+/ig);
+      const fullName = e.target.value.match(/^([A-Z])\w+\s([A-Z])\w+/ig);
+
+      if (simpleName || fullName) {
+        this.setState({ ...this.state, user: { name: e.target.value } });
+      } else this.setState({ ...this.state, user: { name: null } });
+    };
+
+    return name;
   }
 
   componentDidMount() {
@@ -94,7 +116,8 @@ export default class NewUser extends React.Component {
           type="text"
           className="name"
           placeholder="Name"
-          onChange={this.nameOnChange}
+          pattern="[A-Za-z]"
+          onChange={this.nameOnChange()}
           required={true}
         />
         <input type="email" className="email" placeholder="Email" required={true} />

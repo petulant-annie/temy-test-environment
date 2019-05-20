@@ -13,7 +13,6 @@
   "license": "MIT",
   "dependencies": {
     "react": "^16.8.6",
-    "lib-react-components": "^0.3.11",
     "react-content-loader": "^4.2.1",
     "react-dom": "^16.8.6"
   },

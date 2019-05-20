@@ -1,13 +1,17 @@
 import * as React from 'react';
 import './styles/UserList.sass';
 
-interface IItem {
+export interface IUser {
   id: number;
   name: string;
   email: string;
   phone_number: number;
   address: string;
   about_me: string;
+  country_id?: string;
+  state_id?: string;
+  city_id?: string;
+  createdAt?: number;
 }
 
 export default class UserList extends React.Component {
@@ -40,7 +44,7 @@ export default class UserList extends React.Component {
   }
 
   render() {
-    const users = this.state.users.map((item: IItem) => {
+    const users = this.state.users.map((item: IUser) => {
       return (
         <div className="user" key={item.id}>
           <p>{item.name}</p>
