@@ -53,8 +53,9 @@ export default class NewUser extends React.Component {
     if (item.state_id === value) return <option key={item.id} value={item.id}>{item.name}</option>;
   }
 
-  nameOnChange = (e) => {
-    e.target.value.match(/^[a-zA-Z]+$/ig);
+  nameOnChange(e) {
+    let event = e.target.value.match(/^([A-Z])\w+$/ig);
+    console.log(event);
   }
 
   componentDidMount() {
@@ -76,7 +77,8 @@ export default class NewUser extends React.Component {
           name="country"
           id="country"
           defaultValue={this.state.countryValue}
-          required>
+          required
+        >
           <option value="-1">Select country</option>
           {countries}
         </select>
@@ -87,7 +89,8 @@ export default class NewUser extends React.Component {
           id="state"
           defaultValue="-1"
           style={this.state.countryValue == -1 ? { display: 'none' } : { display: 'block' }}
-          required>
+          required
+        >
           <option value="-1">Select state</option>
           {states}
         </select>
@@ -97,14 +100,15 @@ export default class NewUser extends React.Component {
           id="city"
           defaultValue="-1"
           style={this.state.stateValue == -1 ? { display: 'none' } : { display: 'block' }}
-          required>
+          required
+        >
           <option value="-1">Select city</option>
           {cities}
         </select>
         <input type="number" className="phone" placeholder="Phone Number" required />
         <input type="text" className="adress" placeholder="Adress" />
         <textarea name="about" id="about" cols="30" rows="10" maxLength="500" placeholder="About Me"></textarea>
-        <input type="submit" onSubmit={this.nameOnChange} />
+        <input type="submit" />
       </form>
     );
   }
