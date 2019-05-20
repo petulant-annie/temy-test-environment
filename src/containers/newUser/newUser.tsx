@@ -10,6 +10,7 @@ interface IItem {
 export default class NewUser extends React.Component {
   state: {
     user: IUser,
+    nameValid: boolean,
     cities: [],
     countries: [],
     states: [],
@@ -35,6 +36,7 @@ export default class NewUser extends React.Component {
         city_id: null,
         createdAt: null,
       },
+      nameValid: false,
       cities: [],
       countries: [],
       states: [],
@@ -86,13 +88,16 @@ export default class NewUser extends React.Component {
 
   nameOnChange() {
     const name = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const simpleName = e.target.value.match(/^([A-Z])\w+/ig);
-      const fullName = e.target.value.match(/^([A-Z])\w+\s([A-Z])\w+/ig);
+      const simpleName = e.target.value.match(/^([a-zа-яё]+|\D+)$/ig);
 
-      if (simpleName || fullName) {
-        this.setState({ ...this.state, user: { name: e.target.value } });
-      } else this.setState({ ...this.state, user: { name: null } });
+      if (simpleName) {
+        this.setState({ ...this.state, user: { name: e.target.value }, nameValid: true });
+      } else {
+        this.setState({ ...this.state, user: { name: null }, nameValid: false });
+      }
     };
+    console.log(this.state.user.name);
+    console.log(this.state.nameValid);
 
     return name;
   }
@@ -116,7 +121,7 @@ export default class NewUser extends React.Component {
           type="text"
           className="name"
           placeholder="Name"
-          pattern="[A-Za-z]"
+          style={this.state.nameValid ? { background: 'green' } : { background: 'red' }}
           onChange={this.nameOnChange()}
           required={true}
         />
@@ -155,7 +160,13 @@ export default class NewUser extends React.Component {
           <option value="-1">Select city</option>
           {cities}
         </select>
-        <input type="number" className="phone" placeholder="Phone Number" required={true} />
+        <input
+          type="text"
+          className="phone"
+          placeholder="Phone Number"
+          pattern="[0-9]{12}"
+          required={true}
+        />
         <input type="text" className="adress" placeholder="Adress" />
         <textarea
           name="about"
