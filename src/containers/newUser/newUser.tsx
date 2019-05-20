@@ -96,8 +96,6 @@ export default class NewUser extends React.Component {
         this.setState({ ...this.state, user: { name: null }, nameValid: false });
       }
     };
-    console.log(this.state.user.name);
-    console.log(this.state.nameValid);
 
     return name;
   }
@@ -116,21 +114,29 @@ export default class NewUser extends React.Component {
       this.state.cities.map(item => this.mapCitySelectOptions(item, this.state.stateValue));
 
     return (
-      <form className="new-user">
+      <form className="newUser" id="newUser">
         <input
           type="text"
-          className="name"
+          className="inputName"
+          id="inputName"
           placeholder="Name"
           style={this.state.nameValid ? { background: 'green' } : { background: 'red' }}
           onChange={this.nameOnChange()}
           required={true}
         />
-        <input type="email" className="email" placeholder="Email" required={true} />
+        <input
+          type="email"
+          className="inputEmail"
+          id="inputEmail"
+          placeholder="Email"
+          required={true}
+        />
         <select
           ref={this.selectCountry}
           onChange={this.selectCountryHandler}
-          name="country"
-          id="country"
+          name="selectCountry"
+          className="selectCountry"
+          id="selectCountry"
           defaultValue={`${this.state.countryValue}`}
           required={true}
         >
@@ -140,8 +146,9 @@ export default class NewUser extends React.Component {
         <select
           ref={this.selectState}
           onChange={this.selectStateHandler}
-          name="state"
-          id="state"
+          name="selectState"
+          className="selectState"
+          id="selectState"
           defaultValue="-1"
           style={this.state.countryValue === -1 ? { display: 'none' } : { display: 'block' }}
           required={true}
@@ -151,8 +158,9 @@ export default class NewUser extends React.Component {
         </select>
         <select
           ref={this.selectCity}
-          name="city"
-          id="city"
+          name="selectCity"
+          className="selectCity"
+          id="selectCity"
           defaultValue="-1"
           style={this.state.stateValue === -1 ? { display: 'none' } : { display: 'block' }}
           required={true}
@@ -161,16 +169,17 @@ export default class NewUser extends React.Component {
           {cities}
         </select>
         <input
-          type="text"
-          className="phone"
+          type="number"
+          className="inputPhone"
+          id="inputPhone"
           placeholder="Phone Number"
-          pattern="[0-9]{12}"
           required={true}
         />
-        <input type="text" className="adress" placeholder="Adress" />
+        <input type="text" className="inputAdress" id="inputAdress" placeholder="Adress" />
         <textarea
-          name="about"
-          id="about"
+          name="inputAbout"
+          className="inputAbout"
+          id="inputAbout"
           cols={30}
           rows={10}
           maxLength={500}
