@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './styles/UserList.sass';
+import './styles/userList.sass';
 
 interface IProps {
   getUsers: ([]) => Promise<[]>;

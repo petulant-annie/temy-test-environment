@@ -16,10 +16,9 @@ export function getData(array, dataType) {
 }
 
 export function postUser(user: {}) {
-  const headers = { 'Content-Type': 'application/json' };
   fetch('http://localhost:3000/users', {
-    headers,
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user),
   });
 }

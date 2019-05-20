@@ -8,7 +8,7 @@ import './styles/main.sass';
 export default class Main extends React.Component {
   render() {
     return (
-      <div>
+      <div className="wrapper">
         <NewUser getData={getData} postUser={postUser} />
         <UserList getUsers={getUsers} />
       </div>

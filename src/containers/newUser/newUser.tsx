@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IUser } from '../userList/userList';
-import './styles/addNewUser.sass';
+import './styles/newUser.sass';
 
 interface IProps {
   getData: ([], dataType: string) => Promise<[]>;
@@ -65,12 +65,26 @@ export default class NewUser extends React.Component<IProps> {
 
   selectCountryHandler = () => {
     this.setState(
-      { ...this.state, countryValue: this.selectCountry.current.value, stateValue: '-1' });
+      {
+        ...this.state,
+        countryValue: this.selectCountry.current.value,
+        user: { ...this.state.user, country_id: this.selectCountry.current.value },
+        stateValue: '-1',
+      });
   }
 
   selectStateHandler = () => {
     this.setState(
-      { ...this.state, stateValue: this.selectState.current.value });
+      {
+        ...this.state,
+        stateValue: this.selectState.current.value,
+        user: { ...this.state.user, state_id: this.selectState.current.value },
+      });
+  }
+
+  selectCityHandler = (e) => {
+    this.setState(
+      { ...this.state, user: { ...this.state.user, city_id: e.target.value } });
   }
 
   mapStateSelectOptions(item, value) {
@@ -99,9 +113,33 @@ export default class NewUser extends React.Component<IProps> {
     return name;
   }
 
-  handleSubmit = (e) => {
+  phoneOnChange() {
+    const phone = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const phoneValue =
+        e.target.value.match(/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/ig);
+
+      if (phoneValue) {
+        this.setState(
+          { ...this.state, user: { ...this.state.user, phone_number: e.target.value } },
+        );
+      } else {
+        this.setState(
+          { ...this.state, user: { ...this.state.user, phone_number: null } });
+      }
+    };
+
+    return phone;
+  }
+
+  dataOnChange = (e) => {
+    const target = e.target;
+    const tname = target.name;
+
+    this.setState({ ...this.state, user: { ...this.state.user, [tname]: target.value } });
+  }
+
+  handleSubmit = () => {
     this.props.postUser(this.state.user);
-    // e.preventDefault();
   }
 
   componentDidMount() {
@@ -118,81 +156,91 @@ export default class NewUser extends React.Component<IProps> {
       this.state.cities.map(item => this.mapCitySelectOptions(item, this.state.stateValue));
 
     return (
-      <form className="newUser" id="newUser">
+      <form className="form-group" id="newUser" onSubmit={this.handleSubmit}>
         <input
           type="text"
           name="name"
-          className="inputName"
+          className="form-control"
           id="inputName"
-          placeholder="Name"
-          style={this.state.nameValid ? { background: 'green' } : { background: 'red' }}
+          placeholder="Name*"
+          // style={this.state.nameValid ? { outline: 'green' } : { outline: 'red' }}
           onChange={this.nameOnChange()}
           required={true}
         />
         <input
           type="email"
           name="email"
-          className="inputEmail"
+          className="form-control"
           id="inputEmail"
-          placeholder="Email"
+          placeholder="Email*"
+          onChange={this.dataOnChange}
           required={true}
         />
         <select
           ref={this.selectCountry}
-          onChange={this.selectCountryHandler}
           name="selectCountry"
-          className="selectCountry"
+          className="form-control"
           id="selectCountry"
           defaultValue={`${this.state.countryValue}`}
+          onChange={this.selectCountryHandler}
           required={true}
         >
-          <option value="-1">Select country</option>
+          <option value="-1">Select country*</option>
           {countries}
         </select>
         <select
           ref={this.selectState}
-          onChange={this.selectStateHandler}
           name="selectState"
-          className="selectState"
+          className="form-control"
           id="selectState"
           defaultValue="-1"
           style={this.state.countryValue === '-1' ? { display: 'none' } : { display: 'block' }}
+          onChange={this.selectStateHandler}
           required={true}
         >
-          <option value="-1">Select state</option>
+          <option value="-1">Select state*</option>
           {states}
         </select>
         <select
           ref={this.selectCity}
           name="selectCity"
-          className="selectCity"
+          className="form-control"
           id="selectCity"
           defaultValue="-1"
-          style={this.state.countryValue === '-1' ? { display: 'none' } : { display: 'block' }}
+          style={this.state.stateValue === '-1' ? { display: 'none' } : { display: 'block' }}
+          onChange={this.selectCityHandler}
           required={true}
         >
-          <option value="-1">Select city</option>
+          <option value="-1">Select city*</option>
           {cities}
         </select>
         <input
           type="number"
           name="phone_number"
-          className="inputPhone"
+          className="form-control"
           id="inputPhone"
-          placeholder="Phone Number"
+          placeholder="Phone Number*"
+          onChange={this.phoneOnChange}
           required={true}
         />
-        <input type="text" className="inputAdress" id="inputAdress" placeholder="Adress" />
+        <input
+          type="text"
+          name="address"
+          className="form-control"
+          id="inputAdress"
+          placeholder="Adress"
+        />
         <textarea
-          name="inputAbout"
-          className="inputAbout"
+          name="about_me"
+          className="form-control"
           id="inputAbout"
-          cols={30}
-          rows={10}
+          rows={5}
           maxLength={500}
           placeholder="About Me"
+          onChange={this.dataOnChange}
         />
-        <input type="button" value="Submit" onSubmit={this.handleSubmit} />
+        <p className="bmd-label">* - required fields</p>
+        <button className="btn btn-raised btn-primary">Submit</button>
       </form>
     );
   }
