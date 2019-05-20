@@ -2,26 +2,31 @@ import * as React from 'react';
 import { IUser } from '../userList/userList';
 import './styles/addNewUser.sass';
 
+interface IProps {
+  getData: ([], dataType: string) => Promise<[]>;
+  postUser: (user: {}) => void;
+}
+
 interface IItem {
   id: number;
   name: string;
 }
 
-export default class NewUser extends React.Component {
+export default class NewUser extends React.Component<IProps> {
   state: {
     user: IUser,
     nameValid: boolean,
     cities: [],
     countries: [],
     states: [],
-    countryValue: number,
-    stateValue: number,
+    countryValue: string,
+    stateValue: string,
   };
   selectCountry: React.RefObject<HTMLSelectElement>;
   selectState: React.RefObject<HTMLSelectElement>;
   selectCity: React.RefObject<HTMLSelectElement>;
 
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       user: {
@@ -40,35 +45,27 @@ export default class NewUser extends React.Component {
       cities: [],
       countries: [],
       states: [],
-      countryValue: -1,
-      stateValue: -1,
+      countryValue: '-1',
+      stateValue: '-1',
     };
     this.selectCountry = React.createRef();
     this.selectState = React.createRef();
     this.selectCity = React.createRef();
   }
 
-  getData(array, dataType) {
-    return fetch(`http://localhost:3000/${dataType}`, { method: 'GET' })
-      .then(res => res.json())
-      .then(res => res.forEach((element) => {
-        array.push(element);
-      }));
-  }
-
   getInfo() {
     const cities = [];
     const countries = [];
     const states = [];
-    this.getData(cities, 'cities')
-      .then(this.getData(countries, 'countries')
-        .then(this.getData(states, 'states')
+    this.props.getData(cities, 'cities')
+      .then(this.props.getData(countries, 'countries')
+        .then(this.props.getData(states, 'states')
           .then(() => this.setState({ ...this.state, cities, countries, states }))));
   }
 
   selectCountryHandler = () => {
     this.setState(
-      { ...this.state, countryValue: this.selectCountry.current.value, stateValue: -1 });
+      { ...this.state, countryValue: this.selectCountry.current.value, stateValue: '-1' });
   }
 
   selectStateHandler = () => {
@@ -91,9 +88,11 @@ export default class NewUser extends React.Component {
       const simpleName = e.target.value.match(/^([a-zа-яё]+|\D+)$/ig);
 
       if (simpleName) {
-        this.setState({ ...this.state, user: { name: e.target.value }, nameValid: true });
+        this.setState(
+          { ...this.state, user: { ...this.state.user, name: e.target.value }, nameValid: true });
       } else {
-        this.setState({ ...this.state, user: { name: null }, nameValid: false });
+        this.setState(
+          { ...this.state, user: { ...this.state.user, name: null }, nameValid: false });
       }
     };
 
@@ -101,14 +100,8 @@ export default class NewUser extends React.Component {
   }
 
   handleSubmit = (e) => {
-    const data = new FormData(e.target);
-
-    console.log(data);
-
-    fetch('http://localhost:3000/users', {
-      method: 'POST',
-      body: data,
-    });
+    this.props.postUser(this.state.user);
+    // e.preventDefault();
   }
 
   componentDidMount() {
@@ -125,9 +118,10 @@ export default class NewUser extends React.Component {
       this.state.cities.map(item => this.mapCitySelectOptions(item, this.state.stateValue));
 
     return (
-      <form className="newUser" id="newUser" onSubmit={this.handleSubmit}>
+      <form className="newUser" id="newUser">
         <input
           type="text"
+          name="name"
           className="inputName"
           id="inputName"
           placeholder="Name"
@@ -137,6 +131,7 @@ export default class NewUser extends React.Component {
         />
         <input
           type="email"
+          name="email"
           className="inputEmail"
           id="inputEmail"
           placeholder="Email"
@@ -161,7 +156,7 @@ export default class NewUser extends React.Component {
           className="selectState"
           id="selectState"
           defaultValue="-1"
-          style={this.state.countryValue === -1 ? { display: 'none' } : { display: 'block' }}
+          style={this.state.countryValue === '-1' ? { display: 'none' } : { display: 'block' }}
           required={true}
         >
           <option value="-1">Select state</option>
@@ -173,7 +168,7 @@ export default class NewUser extends React.Component {
           className="selectCity"
           id="selectCity"
           defaultValue="-1"
-          style={this.state.stateValue === -1 ? { display: 'none' } : { display: 'block' }}
+          style={this.state.countryValue === '-1' ? { display: 'none' } : { display: 'block' }}
           required={true}
         >
           <option value="-1">Select city</option>
@@ -181,6 +176,7 @@ export default class NewUser extends React.Component {
         </select>
         <input
           type="number"
+          name="phone_number"
           className="inputPhone"
           id="inputPhone"
           placeholder="Phone Number"
@@ -196,7 +192,7 @@ export default class NewUser extends React.Component {
           maxLength={500}
           placeholder="About Me"
         />
-        <button>Submit</button>
+        <input type="button" value="Submit" onSubmit={this.handleSubmit} />
       </form>
     );
   }

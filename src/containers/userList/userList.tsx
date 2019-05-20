@@ -1,6 +1,10 @@
 import * as React from 'react';
 import './styles/UserList.sass';
 
+interface IProps {
+  getUsers: ([]) => Promise<[]>;
+}
+
 export interface IUser {
   id: number;
   name: string;
@@ -14,28 +18,20 @@ export interface IUser {
   createdAt?: number;
 }
 
-export default class UserList extends React.Component {
+export default class UserList extends React.Component<IProps> {
   state: {
     users: [],
   };
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       users: [],
     };
   }
 
-  getData(array) {
-    return fetch('http://localhost:3000/users', { method: 'GET' })
-      .then(res => res.json())
-      .then(res => res.forEach((element) => {
-        array.push(element);
-      }));
-  }
-
   getInfo() {
-    const users = [];
-    this.getData(users)
+    const users: [] = [];
+    this.props.getUsers(users)
       .then(() => this.setState({ ...this.state, users }));
   }
 
