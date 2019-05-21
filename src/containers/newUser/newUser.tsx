@@ -15,12 +15,12 @@ interface IItem {
 export default class NewUser extends React.Component<IProps> {
   state: {
     user: IUser,
-    nameValid: boolean,
     cities: [],
     countries: [],
     states: [],
     countryValue: string,
     stateValue: string,
+    enableSubmit: boolean,
   };
   selectCountry: React.RefObject<HTMLSelectElement>;
   selectState: React.RefObject<HTMLSelectElement>;
@@ -39,12 +39,12 @@ export default class NewUser extends React.Component<IProps> {
         state_id: null,
         city_id: null,
       },
-      nameValid: false,
       cities: [],
       countries: [],
       states: [],
       countryValue: '-1',
       stateValue: '-1',
+      enableSubmit: false,
     };
     this.selectCountry = React.createRef();
     this.selectState = React.createRef();
@@ -83,7 +83,7 @@ export default class NewUser extends React.Component<IProps> {
   selectCityHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const city = e.target as HTMLSelectElement;
     this.setState(
-      { ...this.state, user: { ...this.state.user, city_id: city.value } });
+      { ...this.state, user: { ...this.state.user, city_id: city.value }, enableSubmit: true });
   }
 
   mapStateSelectOptions(item: IUser, value: string) {
@@ -103,10 +103,12 @@ export default class NewUser extends React.Component<IProps> {
     const phoneRegExp = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/ig;
 
     if (targetName.toString() === 'name' && target.value.match(nameRegExp)) {
+      target.setCustomValidity('');
       this.dataOnChange(e);
     } else if (targetName.toString() === 'phone_number' && target.value.match(phoneRegExp)) {
+      target.setCustomValidity('');
       this.dataOnChange(e);
-    } else target.field.setCustomValidity('');
+    } else target.setCustomValidity('Invalid data.');
   }
 
   onInputChange = (e: React.ChangeEvent) => {
@@ -118,6 +120,7 @@ export default class NewUser extends React.Component<IProps> {
     const targetName = target.name;
 
     this.setState({ ...this.state, user: { ...this.state.user, [targetName]: target.value } });
+
   }
 
   handleSubmit = (e) => {
@@ -138,6 +141,8 @@ export default class NewUser extends React.Component<IProps> {
       this.state.states.map(item => this.mapStateSelectOptions(item, this.state.countryValue));
     const cities =
       this.state.cities.map(item => this.mapCitySelectOptions(item, this.state.stateValue));
+
+    const buttonActivation = !this.state.enableSubmit ? true : false;
 
     return (
       <form className="form-group" id="newUser" onSubmit={this.handleSubmit}>
@@ -223,7 +228,12 @@ export default class NewUser extends React.Component<IProps> {
           onChange={this.onInputChange}
         />
         <p className="bmd-label">* - required fields</p>
-        <button className="btn btn-raised btn-primary">Submit</button>
+        <fieldset disabled={buttonActivation}>
+          <button
+            className="btn btn-raised btn-primary"
+          >Submit
+          </button>
+        </fieldset>
       </form>
     );
   }
