@@ -96,15 +96,34 @@ export default class NewUser extends React.Component<IProps> {
     if (item.state_id === value) return <option key={item.id} value={item.id}>{item.name}</option>;
   }
 
-  dataOnChange = (e: React.ChangeEvent) => {
+  onInputChangeWithValidation = (e: React.ChangeEvent) => {
+    const target = e.target as HTMLInputElement;
+    const targetName = target.name;
+    const nameRegExp = /^([a-zа-яё]+(\s*)|\D+)$/ig;
+    const phoneRegExp = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/ig;
+
+    if (targetName.toString() === 'name' && target.value.match(nameRegExp)) {
+      this.dataOnChange(e);
+    } else if (targetName.toString() === 'phone_number' && target.value.match(phoneRegExp)) {
+      this.dataOnChange(e);
+    } else target.field.setCustomValidity('');
+  }
+
+  onInputChange = (e: React.ChangeEvent) => {
+    this.dataOnChange(e);
+  }
+
+  dataOnChange(e: React.ChangeEvent) {
     const target = e.target as HTMLInputElement;
     const targetName = target.name;
 
     this.setState({ ...this.state, user: { ...this.state.user, [targetName]: target.value } });
   }
 
-  handleSubmit = () => {
+  handleSubmit = (e) => {
+    e.preventDefault();
     this.props.postUser(this.state.user);
+    console.log(this.state.user);
   }
 
   componentDidMount() {
@@ -128,7 +147,7 @@ export default class NewUser extends React.Component<IProps> {
           className="form-control"
           id="inputName"
           placeholder="Name*"
-          onChange={this.dataOnChange}
+          onChange={this.onInputChangeWithValidation}
           required={true}
         />
         <input
@@ -137,7 +156,7 @@ export default class NewUser extends React.Component<IProps> {
           className="form-control"
           id="inputEmail"
           placeholder="Email*"
-          onChange={this.dataOnChange}
+          onChange={this.onInputChange}
           required={true}
         />
         <select
@@ -184,7 +203,7 @@ export default class NewUser extends React.Component<IProps> {
           className="form-control"
           id="inputPhone"
           placeholder="Phone Number*"
-          onChange={this.dataOnChange}
+          onChange={this.onInputChangeWithValidation}
           required={true}
         />
         <input
@@ -201,7 +220,7 @@ export default class NewUser extends React.Component<IProps> {
           rows={5}
           maxLength={500}
           placeholder="About Me"
-          onChange={this.dataOnChange}
+          onChange={this.onInputChange}
         />
         <p className="bmd-label">* - required fields</p>
         <button className="btn btn-raised btn-primary">Submit</button>
