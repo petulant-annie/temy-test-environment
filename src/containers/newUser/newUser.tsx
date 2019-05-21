@@ -20,11 +20,10 @@ export default class NewUser extends React.Component<IProps> {
     states: [],
     countryValue: string,
     stateValue: string,
-    enableSubmit: boolean,
   };
-  selectCountry: React.RefObject<HTMLSelectElement>;
-  selectState: React.RefObject<HTMLSelectElement>;
-  selectCity: React.RefObject<HTMLSelectElement>;
+  selectCountryRef: React.RefObject<HTMLSelectElement>;
+  selectStateRef: React.RefObject<HTMLSelectElement>;
+  selectCityRef: React.RefObject<HTMLSelectElement>;
 
   constructor(props: IProps) {
     super(props);
@@ -44,11 +43,10 @@ export default class NewUser extends React.Component<IProps> {
       states: [],
       countryValue: '-1',
       stateValue: '-1',
-      enableSubmit: false,
     };
-    this.selectCountry = React.createRef();
-    this.selectState = React.createRef();
-    this.selectCity = React.createRef();
+    this.selectCountryRef = React.createRef();
+    this.selectStateRef = React.createRef();
+    this.selectCityRef = React.createRef();
   }
 
   async getLocation() {
@@ -61,32 +59,48 @@ export default class NewUser extends React.Component<IProps> {
     await this.setState({ ...this.state, cities, countries, states });
   }
 
-  selectCountryHandler = (e) => {
-    if (e.target.value.toString() !== '-1') {
-      e.target.setCustomValidity('');
-    } else e.target.setCustomValidity('Please pick country.');
+  checkIfSelectValid(
+    firstSelect: React.ChangeEvent<HTMLSelectElement>,
+    secondSelect?: HTMLSelectElement | null) {
+
+    if (firstSelect.target.value !== '-1') {
+      firstSelect.target.setCustomValidity('');
+      if (secondSelect) {
+        secondSelect.setCustomValidity(`Please pick ${secondSelect.name.replace('select', '')}.`);
+      }
+    } else {
+      firstSelect.target.setCustomValidity(
+        `Please pick ${firstSelect.target.name.replace('select', '')}.`);
+      if (secondSelect) secondSelect.setCustomValidity('');
+    }
+
+  }
+
+  selectCountryHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.checkIfSelectValid(e, this.selectStateRef.current);
     this.setState(
       {
         ...this.state,
-        countryValue: this.selectCountry.current.value,
-        user: { ...this.state.user, country_id: this.selectCountry.current.value },
+        countryValue: this.selectCountryRef.current.value,
+        user: { ...this.state.user, country_id: this.selectCountryRef.current.value },
         stateValue: '-1',
       });
   }
 
-  selectStateHandler = () => {
+  selectStateHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.checkIfSelectValid(e, this.selectCityRef.current);
     this.setState(
       {
         ...this.state,
-        stateValue: this.selectState.current.value,
-        user: { ...this.state.user, state_id: this.selectState.current.value },
+        stateValue: this.selectStateRef.current.value,
+        user: { ...this.state.user, state_id: this.selectStateRef.current.value },
       });
   }
 
   selectCityHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const city = e.target as HTMLSelectElement;
+    this.checkIfSelectValid(e);
     this.setState(
-      { ...this.state, user: { ...this.state.user, city_id: city.value }, enableSubmit: true });
+      { ...this.state, user: { ...this.state.user, city_id: e.target.value }, enableSubmit: true });
   }
 
   mapStateSelectOptions(item: IUser, value: string) {
@@ -107,18 +121,14 @@ export default class NewUser extends React.Component<IProps> {
 
     if (targetName.toString() === 'name' && target.value.match(nameRegExp)) {
       target.setCustomValidity('');
-      this.dataOnChange(e);
+      this.dataChange(e);
     } else if (targetName.toString() === 'phone_number' && target.value.match(phoneRegExp)) {
       target.setCustomValidity('');
-      this.dataOnChange(e);
+      this.dataChange(e);
     } else target.setCustomValidity('Invalid data.');
   }
 
-  onInputChange = (e: React.ChangeEvent) => {
-    this.dataOnChange(e);
-  }
-
-  dataOnChange(e: React.ChangeEvent) {
+  dataChange(e: React.ChangeEvent) {
     const target = e.target as HTMLInputElement;
     const targetName = target.name;
 
@@ -126,14 +136,18 @@ export default class NewUser extends React.Component<IProps> {
 
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
+  handleOnInputChange = (e: React.ChangeEvent) => {
+    this.dataChange(e);
+  }
+
+  handleSubmit = () => {
     this.props.postUser(this.state.user);
-    console.log(this.state.user);
   }
 
   componentDidMount() {
     this.getLocation();
+    this.selectCountryRef.current.setCustomValidity(
+      `Please pick ${this.selectCountryRef.current.name.replace('select', '')}.`);
   }
 
   render() {
@@ -145,19 +159,12 @@ export default class NewUser extends React.Component<IProps> {
     const cities =
       this.state.cities.map(item => this.mapCitySelectOptions(item, this.state.stateValue));
 
-    const selectCountryStyle = this.state.countryValue === '-1' ?
-      { color: 'red' } : { color: 'black' };
-    const selectStyle =
-      this.state.countryValue === '-1' ?
-      { display: 'none', color: 'red' } : { display: 'block', color: 'black' };
-
     return (
       <form className="form-group" id="newUser" onSubmit={this.handleSubmit}>
         <input
           type="text"
           name="name"
           className="form-control"
-          id="inputName"
           placeholder="Name*"
           onChange={this.onInputChangeWithValidation}
           required={true}
@@ -166,17 +173,14 @@ export default class NewUser extends React.Component<IProps> {
           type="email"
           name="email"
           className="form-control"
-          id="inputEmail"
           placeholder="Email*"
-          onChange={this.onInputChange}
+          onChange={this.handleOnInputChange}
           required={true}
         />
         <select
-          ref={this.selectCountry}
+          ref={this.selectCountryRef}
           name="selectCountry"
           className="form-control"
-          id="selectCountry"
-          style={selectCountryStyle}
           defaultValue={this.state.countryValue}
           onChange={this.selectCountryHandler}
           required={true}
@@ -185,12 +189,11 @@ export default class NewUser extends React.Component<IProps> {
           {countries}
         </select>
         <select
-          ref={this.selectState}
+          ref={this.selectStateRef}
           name="selectState"
           className="form-control"
-          id="selectState"
           defaultValue="-1"
-          style={selectStyle}
+          style={this.state.countryValue === '-1' ? { display: 'none' } : { display: 'block' }}
           onChange={this.selectStateHandler}
           required={true}
         >
@@ -198,12 +201,11 @@ export default class NewUser extends React.Component<IProps> {
           {states}
         </select>
         <select
-          ref={this.selectCity}
+          ref={this.selectCityRef}
           name="selectCity"
           className="form-control"
-          id="selectCity"
           defaultValue="-1"
-          style={selectStyle}
+          style={this.state.stateValue === '-1' ? { display: 'none' } : { display: 'block' }}
           onChange={this.selectCityHandler}
           required={true}
         >
@@ -214,7 +216,6 @@ export default class NewUser extends React.Component<IProps> {
           type="number"
           name="phone_number"
           className="form-control"
-          id="inputPhone"
           placeholder="Phone Number*"
           onChange={this.onInputChangeWithValidation}
           required={true}
@@ -223,25 +224,21 @@ export default class NewUser extends React.Component<IProps> {
           type="text"
           name="address"
           className="form-control"
-          id="inputAdress"
           placeholder="Adress"
         />
         <textarea
           name="about_me"
           className="form-control"
-          id="inputAbout"
           rows={5}
           maxLength={500}
           placeholder="About Me"
-          onChange={this.onInputChange}
+          onChange={this.handleOnInputChange}
         />
         <p className="bmd-label">* - required fields</p>
-        <fieldset disabled={this.state.enableSubmit ? false : true}>
-          <button
-            className="btn btn-raised btn-primary"
-          >Submit
-          </button>
-        </fieldset>
+        <button
+          className="btn btn-raised btn-primary"
+        >Submit
+        </button>
       </form>
     );
   }
