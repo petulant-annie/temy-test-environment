@@ -80,7 +80,7 @@ export default class NewUser extends React.Component<IProps> {
       });
   }
 
-  selectCityHandler = (e) => {
+  selectCityHandler = (e: React.MouseEvent<HTMLSelectElement>) => {
     this.setState(
       { ...this.state, user: { ...this.state.user, city_id: e.target.value } });
   }
@@ -131,7 +131,7 @@ export default class NewUser extends React.Component<IProps> {
     return phone;
   }
 
-  dataOnChange = (e) => {
+  dataOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
     const tname = target.name;
 
@@ -163,7 +163,6 @@ export default class NewUser extends React.Component<IProps> {
           className="form-control"
           id="inputName"
           placeholder="Name*"
-          // style={this.state.nameValid ? { outline: 'green' } : { outline: 'red' }}
           onChange={this.nameOnChange()}
           required={true}
         />
@@ -181,7 +180,7 @@ export default class NewUser extends React.Component<IProps> {
           name="selectCountry"
           className="form-control"
           id="selectCountry"
-          defaultValue={`${this.state.countryValue}`}
+          defaultValue={this.state.countryValue}
           onChange={this.selectCountryHandler}
           required={true}
         >
