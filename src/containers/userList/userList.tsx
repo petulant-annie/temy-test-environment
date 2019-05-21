@@ -20,7 +20,7 @@ export interface IUser {
 
 export default class UserList extends React.Component<IProps> {
   state: {
-    users: [],
+    users: IUser[],
   };
   constructor(props: IProps) {
     super(props);
@@ -29,25 +29,25 @@ export default class UserList extends React.Component<IProps> {
     };
   }
 
-  getInfo() {
-    const users: [] = [];
+  getUserList() {
+    const users: IUser[] = [];
     this.props.getUsers(users)
       .then(() => this.setState({ ...this.state, users }));
   }
 
   componentDidMount() {
-    this.getInfo();
+    this.getUserList();
   }
 
   render() {
-    const users = this.state.users.map((item: IUser) => {
+    const users = this.state.users.map((user: IUser) => {
       return (
-        <div className="user" key={item.id}>
-          <p>{item.name}</p>
-          <p>{item.email}</p>
-          <p>{item.phone_number}</p>
-          <p>{item.address}</p>
-          <p>{item.about_me}</p>
+        <div className="user" key={user.id}>
+          <p>{user.name}</p>
+          <p>{user.email}</p>
+          <p>{user.phone_number}</p>
+          <p>{user.address}</p>
+          <p>{user.about_me}</p>
         </div>
       );
     });

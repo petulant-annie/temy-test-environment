@@ -1,6 +1,7 @@
 
 export async function getUsers(array: Object[]) {
-  const res = await fetch('http://localhost:3000/users', { method: 'GET' });
+  const res =
+  await fetch('http://localhost:3000/users?_sort=createdAt&_order=desc', { method: 'GET' });
   const json = await res.json();
 
   return json.forEach((element: Object[]) => {
@@ -18,7 +19,7 @@ export async function getData(array: Object[], dataType: string) {
 }
 
 export function postUser(user: {}) {
-  fetch('http://localhost:3000/users?_sort=createdAt&_order=desc', {
+  fetch('http://localhost:3000/users', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user),
