@@ -7,4 +7,5 @@ Build using Parcel
 For get started:
 
 -npm i
+
 -npm start
