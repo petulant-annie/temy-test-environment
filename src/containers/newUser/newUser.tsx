@@ -51,7 +51,7 @@ export default class NewUser extends React.Component<IProps> {
     this.selectCity = React.createRef();
   }
 
-  async getInfo() {
+  async getLocation() {
     const cities = [];
     const countries = [];
     const states = [];
@@ -80,62 +80,27 @@ export default class NewUser extends React.Component<IProps> {
       });
   }
 
-  selectCityHandler = (e: React.MouseEvent<HTMLSelectElement>) => {
+  selectCityHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const city = e.target as HTMLSelectElement;
     this.setState(
-      { ...this.state, user: { ...this.state.user, city_id: e.target.value } });
+      { ...this.state, user: { ...this.state.user, city_id: city.value } });
   }
 
-  mapStateSelectOptions(item, value) {
+  mapStateSelectOptions(item: IUser, value: string) {
     if (item.country_id === value) {
       return <option key={item.id} value={item.id}>{item.name}</option>;
     }
   }
 
-  mapCitySelectOptions(item, value) {
+  mapCitySelectOptions(item: IUser, value: string) {
     if (item.state_id === value) return <option key={item.id} value={item.id}>{item.name}</option>;
   }
 
-  nameOnChange() {
-    const name = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const regExp = /^([a-zа-яё]+|\D+)$/ig;
-      const simpleName = e.target.value.match(regExp);
+  dataOnChange = (e: React.ChangeEvent) => {
+    const target = e.target as HTMLInputElement;
+    const targetName = target.name;
 
-      if (simpleName) {
-        this.setState(
-          { ...this.state, user: { ...this.state.user, name: e.target.value }, nameValid: true });
-      } else {
-        this.setState(
-          { ...this.state, user: { ...this.state.user, name: null }, nameValid: false });
-      }
-    };
-
-    return name;
-  }
-
-  phoneOnChange() {
-    const regExp = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/ig;
-    const phone = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const phoneValue =
-        e.target.value.match(regExp);
-
-      if (phoneValue) {
-        this.setState(
-          { ...this.state, user: { ...this.state.user, phone_number: e.target.value } },
-        );
-      } else {
-        this.setState(
-          { ...this.state, user: { ...this.state.user, phone_number: null } });
-      }
-    };
-
-    return phone;
-  }
-
-  dataOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target;
-    const tname = target.name;
-
-    this.setState({ ...this.state, user: { ...this.state.user, [tname]: target.value } });
+    this.setState({ ...this.state, user: { ...this.state.user, [targetName]: target.value } });
   }
 
   handleSubmit = () => {
@@ -143,7 +108,7 @@ export default class NewUser extends React.Component<IProps> {
   }
 
   componentDidMount() {
-    this.getInfo();
+    this.getLocation();
   }
 
   render() {
@@ -163,7 +128,7 @@ export default class NewUser extends React.Component<IProps> {
           className="form-control"
           id="inputName"
           placeholder="Name*"
-          onChange={this.nameOnChange()}
+          onChange={this.dataOnChange}
           required={true}
         />
         <input
@@ -219,7 +184,7 @@ export default class NewUser extends React.Component<IProps> {
           className="form-control"
           id="inputPhone"
           placeholder="Phone Number*"
-          onChange={this.phoneOnChange}
+          onChange={this.dataOnChange}
           required={true}
         />
         <input
