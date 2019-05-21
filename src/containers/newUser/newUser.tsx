@@ -30,7 +30,6 @@ export default class NewUser extends React.Component<IProps> {
     super(props);
     this.state = {
       user: {
-        id: null,
         name: '',
         email: '',
         phone_number: null,
@@ -39,7 +38,6 @@ export default class NewUser extends React.Component<IProps> {
         country_id: null,
         state_id: null,
         city_id: null,
-        createdAt: null,
       },
       nameValid: false,
       cities: [],
@@ -53,14 +51,14 @@ export default class NewUser extends React.Component<IProps> {
     this.selectCity = React.createRef();
   }
 
-  getInfo() {
+  async getInfo() {
     const cities = [];
     const countries = [];
     const states = [];
-    this.props.getData(cities, 'cities')
-      .then(this.props.getData(countries, 'countries')
-        .then(this.props.getData(states, 'states')
-          .then(() => this.setState({ ...this.state, cities, countries, states }))));
+    await this.props.getData(cities, 'cities');
+    await this.props.getData(countries, 'countries');
+    await this.props.getData(states, 'states');
+    await this.setState({ ...this.state, cities, countries, states });
   }
 
   selectCountryHandler = () => {
@@ -99,7 +97,8 @@ export default class NewUser extends React.Component<IProps> {
 
   nameOnChange() {
     const name = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const simpleName = e.target.value.match(/^([a-zа-яё]+|\D+)$/ig);
+      const regExp = /^([a-zа-яё]+|\D+)$/ig;
+      const simpleName = e.target.value.match(regExp);
 
       if (simpleName) {
         this.setState(
@@ -114,9 +113,10 @@ export default class NewUser extends React.Component<IProps> {
   }
 
   phoneOnChange() {
+    const regExp = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/ig;
     const phone = (e: React.ChangeEvent<HTMLInputElement>) => {
       const phoneValue =
-        e.target.value.match(/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/ig);
+        e.target.value.match(regExp);
 
       if (phoneValue) {
         this.setState(

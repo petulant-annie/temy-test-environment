@@ -6,7 +6,7 @@ interface IProps {
 }
 
 export interface IUser {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   phone_number: number;
