@@ -224,7 +224,7 @@ export default class NewUser extends React.Component<IProps> {
           type="text"
           name="address"
           className="form-control"
-          placeholder="Adress"
+          placeholder="Address"
         />
         <textarea
           name="about_me"

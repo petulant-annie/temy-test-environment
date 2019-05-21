@@ -310,18 +310,6 @@
       "state_id": "13",
       "city_id": "13",
       "createdAt": 1543783746465
-    },
-    {
-      "name": "sejkd",
-      "email": "lskjf@ll.ll",
-      "phone_number": "28937492888",
-      "address": "",
-      "about_me": "",
-      "country_id": "1",
-      "state_id": "2",
-      "city_id": "2",
-      "createdAt": 1558454979796,
-      "id": "WapHBOI"
     }
   ]
 }
