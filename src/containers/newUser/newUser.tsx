@@ -61,7 +61,10 @@ export default class NewUser extends React.Component<IProps> {
     await this.setState({ ...this.state, cities, countries, states });
   }
 
-  selectCountryHandler = () => {
+  selectCountryHandler = (e) => {
+    if (e.target.value.toString() !== '-1') {
+      e.target.setCustomValidity('');
+    } else e.target.setCustomValidity('Please pick country.');
     this.setState(
       {
         ...this.state,
@@ -142,7 +145,11 @@ export default class NewUser extends React.Component<IProps> {
     const cities =
       this.state.cities.map(item => this.mapCitySelectOptions(item, this.state.stateValue));
 
-    const buttonActivation = !this.state.enableSubmit ? true : false;
+    const selectCountryStyle = this.state.countryValue === '-1' ?
+      { color: 'red' } : { color: 'black' };
+    const selectStyle =
+      this.state.countryValue === '-1' ?
+      { display: 'none', color: 'red' } : { display: 'block', color: 'black' };
 
     return (
       <form className="form-group" id="newUser" onSubmit={this.handleSubmit}>
@@ -169,6 +176,7 @@ export default class NewUser extends React.Component<IProps> {
           name="selectCountry"
           className="form-control"
           id="selectCountry"
+          style={selectCountryStyle}
           defaultValue={this.state.countryValue}
           onChange={this.selectCountryHandler}
           required={true}
@@ -182,7 +190,7 @@ export default class NewUser extends React.Component<IProps> {
           className="form-control"
           id="selectState"
           defaultValue="-1"
-          style={this.state.countryValue === '-1' ? { display: 'none' } : { display: 'block' }}
+          style={selectStyle}
           onChange={this.selectStateHandler}
           required={true}
         >
@@ -195,7 +203,7 @@ export default class NewUser extends React.Component<IProps> {
           className="form-control"
           id="selectCity"
           defaultValue="-1"
-          style={this.state.stateValue === '-1' ? { display: 'none' } : { display: 'block' }}
+          style={selectStyle}
           onChange={this.selectCityHandler}
           required={true}
         >
@@ -228,7 +236,7 @@ export default class NewUser extends React.Component<IProps> {
           onChange={this.onInputChange}
         />
         <p className="bmd-label">* - required fields</p>
-        <fieldset disabled={buttonActivation}>
+        <fieldset disabled={this.state.enableSubmit ? false : true}>
           <button
             className="btn btn-raised btn-primary"
           >Submit
