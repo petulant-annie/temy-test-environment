@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import NewUser from '../newUser/newUser';
-import UserList from '../userList/userList';
+import NewUser from '../newUser/addNewUser';
+import UserList from '../userList/userCard';
 import { getUsers, getData, postUser } from '../requests/requests';
 import './styles/main.sass';
 

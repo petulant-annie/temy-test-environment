@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IUser } from '../userList/userList';
+import { IUser } from '../userList/userCard';
 import './styles/newUser.sass';
 
 interface IProps {
@@ -221,10 +221,11 @@ export default class NewUser extends React.Component<IProps> {
           required={true}
         />
         <input
-          type="text"
           name="address"
+          type="text"
           className="form-control"
           placeholder="Address"
+          onChange={this.handleOnInputChange}
         />
         <textarea
           name="about_me"
