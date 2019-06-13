@@ -41,6 +41,8 @@ export default class UserList extends React.Component<IProps> {
 
   render() {
     const users = this.state.users.map((user: IUser) => {
+    // const date = new Date(user.createdAt);
+
       return (
         <div className="user" key={user.id}>
           <p>{user.name}</p>
@@ -48,6 +50,7 @@ export default class UserList extends React.Component<IProps> {
           <p>{user.phone_number}</p>
           <p>{user.address}</p>
           <p>{user.about_me}</p>
+          <p>{user.createdAt}</p>
         </div>
       );
     });
