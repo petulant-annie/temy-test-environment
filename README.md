@@ -1,11 +1,11 @@
-# Temy Test Environment
+## Registration form includes mock-server with database for API calls
 
-Test task implemented with React + Typescript.
+A single page application (one HTML-page) which consists of the registration form and registered users list
 
+Implemented with React + Typescript.
 Build using Parcel
 
 For get started:
-
--npm i
-
--npm start
+  -npm i
+  -npm start
+  
