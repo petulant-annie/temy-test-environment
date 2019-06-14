@@ -1,11 +1,10 @@
-## Registration form includes mock-server with database for API calls
+## The registration form includes mock-server with database for API calls
 
- A single page application (one HTML-page) which consists of the registration form and registered users list
+A single page application (one HTML-page) which consists of the registration form and registered users list
 
- Implemented with React + Typescript.
- Build using Parcel
+Implemented with React + Typescript. Build using Parcel
 
- For get started:
+For getting started:
    * npm i
    * npm start
   
